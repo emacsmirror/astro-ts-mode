@@ -181,6 +181,7 @@
 
   (treesit-major-mode-setup))
 
+;;;###autoload
 (if (treesit-ready-p 'astro)
     (add-to-list 'auto-mode-alist '("\\.astro\\'" . astro-ts-mode)))
 

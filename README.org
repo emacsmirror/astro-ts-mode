@@ -50,6 +50,28 @@ Alternatively, if you're using [[https://github.com/renzmann/treesit-auto][trees
 #+end_src
 
 Make sure you have a working C compiler as =cc= in your PATH, since this needs to compile the grammars.
+
+** LSP Support
+Support for the [[https://github.com/withastro/astro/tree/main/packages/language-tools/language-server][Astro language server]] can be configured through Eglot. First, make sure the language server is globally installed:
+
+#+begin_example
+  npm install -g @astrojs/language-server
+#+end_example
+
+Then, configure ~eglot-server-programs~ with something like the snippet below. Note that the Astro language server generally requires ~typescript.tsdk~ to be given in the initialization options. The snippet below will use the Typescript version installed through NPM in the current project. If you prefer to use a globally-installed Typescript, you'll need to modify this accordingly.
+
+#+begin_src emacs-lisp
+  (add-to-list
+   'eglot-server-programs
+   '(astro-ts-mode . ("astro-ls" "--stdio"
+                      :initializationOptions
+                      (:typescript (:tsdk "./node_modules/typescript/lib")))))
+
+  (add-hook 'astro-ts-mode-hook 'eglot-ensure)
+#+end_src
+
+Alternatively, if you use [[https://emacs-lsp.github.io/lsp-mode/][lsp-mode]] to provide LSP support in your configuration, the language server should work out of the box.
+
 ** Customization
 You can use these variables to customize the behaviour of astro-ts-mode:
 

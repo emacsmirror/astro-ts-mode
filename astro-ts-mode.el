@@ -45,7 +45,7 @@
 (defun astro-ts-mode-install-parsers ()
   "Install all tree-sitter parsers required for `astro-ts-mode' to function."
   (interactive)
-  (mapc #'treesit-install-language-grammar '(astro css tsx)))
+  (mapc #'treesit-install-language-grammar '(astro css typescript)))
 
 (add-to-list
  'treesit-language-source-alist
@@ -85,13 +85,13 @@ mode's name."
      ((parent-is "self_closing_tag") parent-bol astro-ts-mode-indent-offset))
     (css . ,(append '(((parent-is "stylesheet") parent-bol 0))
                     (alist-get 'css css--treesit-indent-rules)))
-    (tsx . ,(append '(((parent-is "program") parent-bol 0))
-                    (alist-get 'tsx (typescript-ts-mode--indent-rules 'tsx)))))
+    (typescript . ,(append '(((parent-is "program") parent-bol 0))
+                           (alist-get 'typescript (typescript-ts-mode--indent-rules 'typescript)))))
   "Tree-sitter indentation rules for `astro-ts-mode'.")
 
 (defvar astro-ts-mode--font-lock-settings
   (append
-   (typescript-ts-mode--font-lock-settings 'tsx)
+   (typescript-ts-mode--font-lock-settings 'typescript)
    css--treesit-settings
    (treesit-font-lock-rules
     :language 'astro
@@ -126,7 +126,7 @@ mode's name."
 
 (defvar astro-ts-mode--range-settings
   (treesit-range-rules
-   :embed 'tsx
+   :embed 'typescript
    :host 'astro
    :local t
    '((frontmatter (frontmatter_js_block) @cap)
@@ -138,7 +138,7 @@ mode's name."
    :host 'astro
    :local t
    '((style_element (raw_text) @cap)))
-  "Tree-sitter range settings for `astro-ts-mode'.")
+  "tree-sitter range settings for `astro-ts-mode'.")
 
 (defvar astro-ts-mode--thing-settings
   (list
@@ -156,7 +156,7 @@ mode's name."
      (defun ,html-ts-mode--treesit-defun-type-regexp))
    ;; Definitions copied from typescript-ts-mode, since it doesn't store them in
    ;; a variable we can access, grumble grumble.
-   `(tsx
+   `(typescript
      (sexp ,(regexp-opt
              (append typescript-ts-mode--sexp-nodes
                      '("jsx"))
@@ -188,7 +188,7 @@ mode's name."
   (let ((lang (treesit-node-language node)))
     (cond
      ((eq lang 'astro) (html-ts-mode--defun-name node))
-     ((eq lang 'tsx) (typescript-ts-mode--defun-name node))
+     ((eq lang 'typescript) (typescript-ts-mode--defun-name node))
      ((eq lang 'css) (css--treesit-defun-name node)))))
 
 (defun astro-ts-mode--outline-predicate (node)
@@ -198,14 +198,14 @@ mode's name."
 
 (defvar astro-ts-mode--aggregated-outline-predicate
   `((astro . ,#'astro-ts-mode--outline-predicate)
-    (tsx . ,typescript-ts-mode--outline-predicate)
+    (typescript . ,typescript-ts-mode--outline-predicate)
     (css . ,css-ts-mode--outline-predicate))
   "Tree-sitter aggregated outline predicates for `astro-ts-mode'.")
 
 (defun astro-ts-mode--embedded-lang-name-at-point ()
   "Returns the name of the embedded language (ie. non HTML) at point."
   (let ((lang (treesit-language-at (point))))
-    (cond ((eq lang 'tsx) "[TS]")
+    (cond ((eq lang 'typescript) "[TS]")
           ((eq lang 'css) "[CSS]")
           (t ""))))
 
@@ -223,8 +223,8 @@ mode's name."
   (unless (treesit-ready-p 'css)
     (error "Tree-sitter grammar for CSS isn't available"))
 
-  (unless (treesit-ready-p 'tsx)
-    (error "Tree-sitter grammar for Typescript/TSX isn't available"))
+  (unless (treesit-ready-p 'typescript)
+    (error "Tree-sitter grammar for Typescript isn't available"))
 
   (setq-local treesit-primary-parser (treesit-parser-create 'astro))
 

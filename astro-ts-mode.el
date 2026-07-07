@@ -188,6 +188,13 @@ mode's name."
     (css . ,css-ts-mode--outline-predicate))
   "Tree-sitter aggregated outline predicates for `astro-ts-mode'.")
 
+(defvar astro-ts-mode--aggregated-simple-imenu-settings
+  `((astro (nil "frontmatter" nil nil)
+           (nil "element" nil nil))
+    (typescript ,@typescript-ts-mode--simple-imenu-settings)
+    (css ,@css--treesit-simple-imenu-settings))
+  "Tree-sitter aggregated imenu definitions for `astro-ts-mode'.")
+
 (defun astro-ts-mode--embedded-lang-name-at-point ()
   "Returns the name of the embedded language (ie. non HTML) at point."
   (let ((lang (treesit-language-at (point))))
@@ -237,6 +244,10 @@ mode's name."
   ;; Outline mode
   (setq-local treesit-aggregated-outline-predicate
               astro-ts-mode--aggregated-outline-predicate)
+
+  ;; Imenu
+  (setq-local treesit-aggregated-simple-imenu-settings
+              astro-ts-mode--aggregated-simple-imenu-settings)
 
   (treesit-major-mode-setup))
 

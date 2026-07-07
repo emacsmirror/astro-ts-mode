@@ -184,8 +184,19 @@
      ((eq lang 'tsx) (typescript-ts-mode--defun-name node))
      ((eq lang 'css) (css--treesit-defun-name node)))))
 
+(defun astro-ts-mode--outline-predicate (node)
+  "Returns t if NODE is a frontmatter node or a multi-line HTML tag."
+  (or (string-match-p "frontmatter" (treesit-node-type node))
+      (html-ts-mode--outline-predicate node)))
+
+(defvar astro-ts-mode--aggregated-outline-predicate
+  `((astro . ,#'astro-ts-mode--outline-predicate)
+    (tsx . ,typescript-ts-mode--outline-predicate)
+    (css . ,css-ts-mode--outline-predicate))
+  "Tree-sitter aggregated outline predicates for `astro-ts-mode'.")
+
 ;;;###autoload
-(define-derived-mode astro-ts-mode html-mode "Astro"
+(define-derived-mode astro-ts-mode html-ts-mode "Astro"
   "Major mode for editing Astro templates, powered by tree-sitter."
   :group 'astro
 
@@ -214,6 +225,10 @@
 
   ;; Embedded languages
   (setq-local treesit-range-settings astro-ts-mode--range-settings)
+
+  ;; Outline mode
+  (setq-local treesit-aggregated-outline-predicate
+              astro-ts-mode--aggregated-outline-predicate)
 
   (treesit-major-mode-setup))
 

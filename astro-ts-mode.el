@@ -152,7 +152,7 @@
   (unless (treesit-ready-p 'tsx)
     (error "Tree-sitter grammar for Typescript/TSX isn't available"))
 
-  (treesit-parser-create 'astro)
+  (setq-local treesit-primary-parser (treesit-parser-create 'astro))
 
   ;; Comments and text content
   (setq-local treesit-text-type-regexp

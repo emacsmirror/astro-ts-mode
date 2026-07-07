@@ -146,36 +146,20 @@ mode's name."
    ;; here. The "list" type needs frontmatter nodes added to it, though, so we
    ;; just redefine it ourselves.
    `(astro
-     ,(cons 'sexp (alist-get 'sexp (car html-ts-mode--treesit-things-settings)))
-     (list ,(rx (or "doctype"
-                    "element"
-                    "comment"
-                    "frontmatter")))
-     ,(cons 'sentence (alist-get 'sentence (car html-ts-mode--treesit-things-settings)))
-     ,(cons 'text (alist-get 'text (car html-ts-mode--treesit-things-settings)))
+     (sexp ,@(alist-get 'sexp (car html-ts-mode--treesit-things-settings)))
+     (list ,(regexp-opt '("doctype"
+                          "element"
+                          "comment"
+                          "frontmatter")))
+     (sentence ,@(alist-get 'sentence (car html-ts-mode--treesit-things-settings)))
+     (text ,@(alist-get 'text (car html-ts-mode--treesit-things-settings)))
      (defun ,html-ts-mode--treesit-defun-type-regexp))
-   ;; Definitions copied from typescript-ts-mode, since it doesn't store them in
-   ;; a variable we can access, grumble grumble.
    `(typescript
-     (sexp ,(regexp-opt
-             (append typescript-ts-mode--sexp-nodes
-                     '("jsx"))
-             'symbols))
-     (list ,(regexp-opt
-             (append typescript-ts-mode--list-nodes
-                     '("jsx_element"
-                       "jsx_self_closing_element"
-                       "jsx_expression"))
-             'symbols))
-     (sentence ,(regexp-opt
-                 (append typescript-ts-mode--sentence-nodes
-                         '("jsx_opening_element"
-                           "jsx_attribute"
-                           "jsx_closing_element"))
-                 'symbols))
+     (sexp ,(regexp-opt typescript-ts-mode--sexp-nodes))
+     (list ,(regexp-opt typescript-ts-mode--list-nodes))
+     (sentence ,(regexp-opt typescript-ts-mode--sentence-nodes))
      (text ,(regexp-opt '("comment"
-                          "template_string")
-                        'symbols))
+                          "template_string")))
      (defun ,(cons typescript-ts-mode--defun-type-regexp
                    #'typescript-ts-mode--defun-predicate)))
    (append

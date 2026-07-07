@@ -176,21 +176,6 @@
     `((defun ,css--treesit-defun-type-regexp))))
   "Tree-sitter thing settings for `astro-ts-mode'.")
 
-(defun astro-ts-mode--treesit-language-at-point (point)
-  "Return the language at POINT."
-  (let* ((node (treesit-node-at point 'astro))
-         (type (treesit-node-type node)))
-    (cond
-     ((string-equal type "raw_text")
-      (let ((parent-type (treesit-node-type (treesit-node-parent node))))
-        (cond
-         ((string-equal parent-type "script_element") 'tsx)
-         ((string-equal parent-type "style_element") 'css))))
-     ((string-equal type "frontmatter_js_block") 'tsx)
-     ((string-equal type "attribute_js_expr") 'tsx)
-     ((string-equal type "permissible_text") 'tsx)
-     (t 'astro))))
-
 ;;;###autoload
 (define-derived-mode astro-ts-mode html-mode "Astro"
   "Major mode for editing Astro templates, powered by tree-sitter."
@@ -219,9 +204,7 @@
               treesit-font-lock-feature-list astro-ts-mode--font-lock-feature-list)
 
   ;; Embedded languages
-  (setq-local treesit-range-settings astro-ts-mode--range-settings
-              treesit-language-at-point-function
-              #'astro-ts-mode--treesit-language-at-point)
+  (setq-local treesit-range-settings astro-ts-mode--range-settings)
 
   (treesit-major-mode-setup))
 

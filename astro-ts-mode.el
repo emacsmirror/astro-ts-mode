@@ -176,6 +176,14 @@
     `((defun ,css--treesit-defun-type-regexp))))
   "Tree-sitter thing settings for `astro-ts-mode'.")
 
+(defun astro-ts-mode--defun-name (node)
+  "Returns the defun name for NODE."
+  (let ((lang (treesit-node-language node)))
+    (cond
+     ((eq lang 'astro) (html-ts-mode--defun-name node))
+     ((eq lang 'tsx) (typescript-ts-mode--defun-name node))
+     ((eq lang 'css) (css--treesit-defun-name node)))))
+
 ;;;###autoload
 (define-derived-mode astro-ts-mode html-mode "Astro"
   "Major mode for editing Astro templates, powered by tree-sitter."
@@ -193,7 +201,8 @@
   (setq-local treesit-primary-parser (treesit-parser-create 'astro))
 
   ;; Things
-  (setq-local treesit-thing-settings astro-ts-mode--thing-settings)
+  (setq-local treesit-thing-settings astro-ts-mode--thing-settings
+              treesit-defun-name-function #'astro-ts-mode--defun-name)
 
   ;; Indentation rules
   (setq-local treesit-simple-indent-rules astro-ts-mode--indent-rules

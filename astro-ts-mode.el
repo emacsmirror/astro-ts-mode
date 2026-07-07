@@ -63,6 +63,13 @@
   :group 'astro
   :package-version '(astro-ts-mode . "1.0.0"))
 
+(defcustom astro-ts-mode-embedded-lang-in-name t
+  "Whether to show the current embedded language (eg. TS, CSS) at point in the
+mode's name."
+  :type 'boolean
+  :group 'astro
+  :package-version '(astro-ts-mode . "4.0.0"))
+
 (defvar astro-ts-mode--indent-rules
   `((astro
      ((parent-is "document") column-0 0)
@@ -195,8 +202,18 @@
     (css . ,css-ts-mode--outline-predicate))
   "Tree-sitter aggregated outline predicates for `astro-ts-mode'.")
 
+(defun astro-ts-mode--embedded-lang-name-at-point ()
+  "Returns the name of the embedded language (ie. non HTML) at point."
+  (let ((lang (treesit-language-at (point))))
+    (cond ((eq lang 'tsx) "[TS]")
+          ((eq lang 'css) "[CSS]")
+          (t ""))))
+
 ;;;###autoload
-(define-derived-mode astro-ts-mode html-ts-mode "Astro"
+(define-derived-mode astro-ts-mode html-ts-mode
+  '("Astro" (:eval (if astro-ts-mode-embedded-lang-in-name
+                       (astro-ts-mode--embedded-lang-name-at-point)
+                     "")))
   "Major mode for editing Astro templates, powered by tree-sitter."
   :group 'astro
 

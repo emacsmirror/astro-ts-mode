@@ -128,15 +128,17 @@ mode's name."
   (treesit-range-rules
    :embed 'typescript
    :host 'astro
-   :local t
    '((frontmatter (frontmatter_js_block) @cap)
-     (attribute_interpolation (attribute_js_expr) @cap)
-     (html_interpolation (permissible_text) @cap)
      (script_element (raw_text) @cap))
+
+   :embed 'typescript
+   :host 'astro
+   :local t
+   '((attribute_interpolation (attribute_js_expr) @cap)
+     (html_interpolation (permissible_text) @cap))
 
    :embed 'css
    :host 'astro
-   :local t
    '((style_element (raw_text) @cap)))
   "tree-sitter range settings for `astro-ts-mode'.")
 
@@ -211,6 +213,8 @@ mode's name."
     (error "Tree-sitter grammar for Typescript isn't available"))
 
   (setq-local treesit-primary-parser (treesit-parser-create 'astro))
+  (treesit-parser-create 'typescript)
+  (treesit-parser-create 'css)
 
   ;; Things
   (setq-local treesit-thing-settings astro-ts-mode--thing-settings

@@ -82,46 +82,40 @@
                     (alist-get 'tsx (typescript-ts-mode--indent-rules 'tsx)))))
   "Tree-sitter indentation rules for `astro-ts-mode'.")
 
-(defun astro-ts-mode--prefix-font-lock-features (prefix settings)
-  "Prefix with PREFIX the font lock features in SETTINGS."
-  (mapcar (lambda (setting)
-            (list (nth 0 setting)
-                  (nth 1 setting)
-                  (intern (format "%s-%s" prefix (nth 2 setting)))
-                  (nth 3 setting)
-                  (nth 4 setting)
-                  (nth 5 setting)))
-          settings))
-
 (defvar astro-ts-mode--font-lock-settings
   (append
-   (astro-ts-mode--prefix-font-lock-features
-    "tsx"
-    (typescript-ts-mode--font-lock-settings 'tsx))
-   (astro-ts-mode--prefix-font-lock-features "css" css--treesit-settings)
+   (typescript-ts-mode--font-lock-settings 'tsx)
+   css--treesit-settings
    (treesit-font-lock-rules
     :language 'astro
-    :feature 'astro-comment
+    :feature 'comment
     '((comment) @font-lock-comment-face
       (frontmatter ("---") @font-lock-comment-face))
 
     :language 'astro
-    :feature 'astro-keyword
+    :feature 'keyword
     '("doctype" @font-lock-keyword-face)
 
     :language 'astro
-    :feature 'astro-definition
+    :feature 'definition
     '((tag_name) @font-lock-function-name-face)
 
     :language 'astro
-    :feature 'astro-string
+    :feature 'string
     '((quoted_attribute_value) @font-lock-string-face
       (attribute_name) @font-lock-constant-face)
 
     :language 'astro
-    :feature 'astro-bracket
+    :feature 'bracket
     '((["<" ">" "</" "/>" "{" "}"]) @font-lock-bracket-face)))
   "Tree-sitter font-lock settings for `astro-ts-mode'.")
+
+(defvar astro-ts-mode--font-lock-feature-list
+  '((comment declaration definition selector query)
+    (keyword string escape-sequence property)
+    (constant expression identifier jsx number pattern property error variable operator)
+    (function bracket delimiter))
+  "Tree-sitter font-lock feature lists for `astro-ts-mode'.")
 
 (defvar astro-ts-mode--range-settings
   (treesit-range-rules
@@ -222,17 +216,7 @@
 
   ;; Font locking
   (setq-local treesit-font-lock-settings astro-ts-mode--font-lock-settings
-              treesit-font-lock-feature-list
-              '((astro-comment astro-keyword astro-definition css-selector
-                               css-comment css-query css-keyword tsx-comment
-                               tsx-declaration tsx-jsx)
-                (astro-string css-property css-constant css-string tsx-keyword
-                              tsx-string tsx-escape-sequence)
-                (css-error css-variable css-function css-operator tsx-constant
-                           tsx-expression tsx-identifier tsx-number tsx-pattern
-                           tsx-property)
-                (astro-bracket css-bracket tsx-function tsx-bracket
-                               tsx-delimiter)))
+              treesit-font-lock-feature-list astro-ts-mode--font-lock-feature-list)
 
   ;; Embedded languages
   (setq-local treesit-range-settings astro-ts-mode--range-settings

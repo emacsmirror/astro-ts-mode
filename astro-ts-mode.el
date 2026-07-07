@@ -42,6 +42,11 @@
 (eval-when-compile
   (require 'rx))
 
+(defun astro-ts-mode-install-parsers ()
+  "Install all tree-sitter parsers required for `astro-ts-mode' to function."
+  (interactive)
+  (mapc #'treesit-install-language-grammar '(astro css tsx)))
+
 (add-to-list
  'treesit-language-source-alist
  '(astro "https://github.com/virchau13/tree-sitter-astro"

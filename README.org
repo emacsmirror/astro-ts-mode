@@ -25,10 +25,7 @@ The first time you open a =.astro= file, or =(require 'astro-ts-mode)=, you'll l
 
 : Cannot activate tree-sitter, because language grammar for astro is unavailable
 
-Because this major mode is powered by [[https://tree-sitter.github.io/tree-sitter/][Tree-sitter]], it depends on an external grammar to provide a syntax tree for Astro templates. To set it up, you'll need to run =treesit-install-language-grammar= once for each language in the list. You can do this interactively (=M-x=), or by evaluating this snippet:
-#+begin_src emacs-lisp
-  (mapc #'treesit-install-language-grammar '(astro css tsx))
-#+end_src
+Because this major mode is powered by [[https://tree-sitter.github.io/tree-sitter/][Tree-sitter]], it depends on an external grammar to provide a syntax tree for Astro templates. To set it up, you'll need to run =M-x astro-ts-mode-install-parsers= once to ensure that all Tree-sitter parsers used by this mode are compiled and ready to use.
 
 Alternatively, if you're using [[https://github.com/renzmann/treesit-auto][treesit-auto]] to manage tree-sitter grammars for you, you can specify a recipe for it:
 #+begin_src emacs-lisp

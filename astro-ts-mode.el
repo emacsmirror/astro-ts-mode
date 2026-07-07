@@ -73,7 +73,9 @@
             (list (nth 0 setting)
                   (nth 1 setting)
                   (intern (format "%s-%s" prefix (nth 2 setting)))
-                  (nth 3 setting)))
+                  (nth 3 setting)
+                  (nth 4 setting)
+                  (nth 5 setting)))
           settings))
 
 (defvar astro-ts-mode--font-lock-settings

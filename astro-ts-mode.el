@@ -37,6 +37,7 @@
 (require 'treesit)
 (require 'typescript-ts-mode)
 (require 'css-mode)
+(require 'html-ts-mode)
 
 (defgroup astro ()
   "Major mode for editing Astro templates."
@@ -121,7 +122,51 @@
    :embed 'css
    :host 'astro
    :local t
-   '((style_element (raw_text) @cap))))
+   '((style_element (raw_text) @cap)))
+  "Tree-sitter range settings for `astro-ts-mode'.")
+
+(defvar astro-ts-mode--thing-settings
+  (list
+   ;; Astro's grammar derives from the HTML grammar, so we can mostly use it
+   ;; here. The "list" type needs frontmatter nodes added to it, though, so we
+   ;; just redefine it ourselves.
+   `(astro
+     ,(cons 'sexp (alist-get 'sexp (car html-ts-mode--treesit-things-settings)))
+     (list ,(rx (or "doctype"
+                    "element"
+                    "comment"
+                    "frontmatter")))
+     ,(cons 'sentence (alist-get 'sentence (car html-ts-mode--treesit-things-settings)))
+     ,(cons 'text (alist-get 'text (car html-ts-mode--treesit-things-settings)))
+     (defun ,html-ts-mode--treesit-defun-type-regexp))
+   ;; Definitions copied from typescript-ts-mode, since it doesn't store them in
+   ;; a variable we can access, grumble grumble.
+   `(tsx
+     (sexp ,(regexp-opt
+             (append typescript-ts-mode--sexp-nodes
+                     '("jsx"))
+             'symbols))
+     (list ,(regexp-opt
+             (append typescript-ts-mode--list-nodes
+                     '("jsx_element"
+                       "jsx_self_closing_element"
+                       "jsx_expression"))
+             'symbols))
+     (sentence ,(regexp-opt
+                 (append typescript-ts-mode--sentence-nodes
+                         '("jsx_opening_element"
+                           "jsx_attribute"
+                           "jsx_closing_element"))
+                 'symbols))
+     (text ,(regexp-opt '("comment"
+                          "template_string")
+                        'symbols))
+     (defun ,(cons typescript-ts-mode--defun-type-regexp
+                   #'typescript-ts-mode--defun-predicate)))
+   (append
+    (car css--treesit-thing-settings)
+    `((defun ,css--treesit-defun-type-regexp))))
+  "Tree-sitter thing settings for `astro-ts-mode'.")
 
 (defun astro-ts-mode--treesit-language-at-point (point)
   "Return the language at POINT."
@@ -154,9 +199,8 @@
 
   (setq-local treesit-primary-parser (treesit-parser-create 'astro))
 
-  ;; Comments and text content
-  (setq-local treesit-text-type-regexp
-              (regexp-opt '("comment" "text")))
+  ;; Things
+  (setq-local treesit-thing-settings astro-ts-mode--thing-settings)
 
   ;; Indentation rules
   (setq-local treesit-simple-indent-rules astro-ts-mode--indent-rules

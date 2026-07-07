@@ -1,26 +1,32 @@
-* astro-ts-mode
-[[https://melpa.org/#/astro-ts-mode][file:https://melpa.org/packages/astro-ts-mode-badge.svg]] [[https://stable.melpa.org/#/astro-ts-mode][file:https://stable.melpa.org/packages/astro-ts-mode-badge.svg]]
+#+title: astro-ts-mode
+#+options: toc:nil
+
+[[https://melpa.org/#/astro-ts-mode][https://melpa.org/packages/astro-ts-mode-badge.svg]] [[https://stable.melpa.org/#/astro-ts-mode][https://stable.melpa.org/packages/astro-ts-mode-badge.svg]]
 
 A major mode for editing [[https://astro.build/][Astro]] templates. Requires Emacs 31.
 
-** Installation
-*** MELPA
+* Installation
+** MELPA
 Available as =astro-ts-mode=. Install with your preferred package manager, such as [[https://github.com/radian-software/straight.el][straight.el]].
-*** Manual
+
+** Manual
 Clone this repo anywhere you want, probably somewhere in =~/.emacs.d= . Then, add the directory to your =load-path=.
 
 For example:
+
 #+begin_example
   cd ~/.emacs.d
   git clone https://github.com/Sorixelle/astro-ts-mode.git
 #+end_example
 
 Then, in =init.el=:
+
 #+begin_src emacs-lisp
   (add-to-list 'load-path (concat user-emacs-directory "astro-ts-mode"))
   (require 'astro-ts-mode)
 #+end_src
-** Setup
+
+* Setup
 The first time you open a =.astro= file, or =(require 'astro-ts-mode)=, you'll likely get a warning such as the following:
 
 : Cannot activate tree-sitter, because language grammar for astro is unavailable
@@ -40,7 +46,7 @@ Alternatively, if you're using [[https://github.com/renzmann/treesit-auto][trees
 
 Make sure you have a working C compiler as =cc= in your PATH, since this needs to compile the grammars.
 
-** LSP Support
+* LSP Support
 Support for the [[https://github.com/withastro/astro/tree/main/packages/language-tools/language-server][Astro language server]] can be configured through Eglot. First, make sure the language server is globally installed:
 
 #+begin_example
@@ -61,14 +67,14 @@ Then, configure ~eglot-server-programs~ with something like the snippet below. N
 
 Alternatively, if you use [[https://emacs-lsp.github.io/lsp-mode/][lsp-mode]] to provide LSP support in your configuration, the language server should work out of the box.
 
-** Customization
+* Customization
 You can use these variables to customize the behaviour of astro-ts-mode:
 
 - =astro-ts-mode-indent-offset= :: Number of spaces for each indentation step. Defaults to 2.
 
-** Contributing
+* Contributing
 If you would like to report an issue or submit a patch to this repo, please send me an email at the address associated with my commits in this repo. I don't use Forgejo's built-in issue tracking or PR capability (and registrations are disabled here, too), but I do respond to emails when I have time.
 
-** Credits
+* Credits
 - [[https://github.com/virchau13][virchau13]] for [[https://github.com/virchau13/tree-sitter-astro][tree-sitter-astro]], the Tree-sitter grammar this major mode is built on
 - The [[https://astro.build/][Astro team]] for the framework this mode is built for

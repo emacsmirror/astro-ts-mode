@@ -231,6 +231,9 @@ mode's name."
   ;; Things
   (setq-local treesit-thing-settings astro-ts-mode--thing-settings
               treesit-defun-name-function #'astro-ts-mode--defun-name)
+  ;; html-ts-mode sets this, so we need to clear it, otherwise it takes
+  ;; precedence over treesit-defun-name-function
+  (kill-local-variable 'treesit-defun-type-regexp)
 
   ;; Indentation rules
   (setq-local treesit-simple-indent-rules astro-ts-mode--indent-rules
